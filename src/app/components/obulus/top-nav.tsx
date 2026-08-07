@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router";
-import { Menu } from "lucide-react";
+import { Menu, Github } from "lucide-react";
 import { useState } from "react";
 import { ObulusLogo } from "./logo";
 import { WalletButton } from "./wallet";
 import { activeChain } from "@/lib/chains";
+import { appConfig } from "@/lib/config";
 
 // Keep route labels centralized so desktop and mobile navigation cannot drift apart.
 const links = [
@@ -50,6 +51,17 @@ export function TopNav() {
             <span className="size-1.5 rounded-full bg-obulus-lime" />
             {activeChain.name}
           </span>
+          {/* Source repositories — icon only, so the bar stays uncluttered next to the wallet. */}
+          <a
+            href={appConfig.githubUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="Obulus source on GitHub"
+            title="Source on GitHub"
+            className="hidden size-9 place-items-center rounded-full border border-obulus-border bg-white text-obulus-ink transition-colors hover:bg-secondary sm:grid"
+          >
+            <Github className="size-4" />
+          </a>
           <WalletButton />
           <button
             onClick={() => setOpen((v) => !v)}
@@ -76,6 +88,17 @@ export function TopNav() {
               {l.label}
             </Link>
           ))}
+          {/* The desktop GitHub icon is hidden below sm — keep the link reachable here. */}
+          <a
+            href={appConfig.githubUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-[15px] text-obulus-ink hover:bg-secondary"
+          >
+            <Github className="size-4" />
+            GitHub
+          </a>
         </nav>
       )}
     </header>

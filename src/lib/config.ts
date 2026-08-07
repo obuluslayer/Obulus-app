@@ -62,6 +62,8 @@ export const appConfig = {
   rpcUrl: env.VITE_RPC_URL || undefined,
   walletConnectProjectId: env.VITE_WALLETCONNECT_PROJECT_ID || undefined,
   defaultArbiter: readAddress("VITE_DEFAULT_ARBITER"),
+  /** Public source: the Obulus repositories (contracts, SDK, cockpit, docs). */
+  githubUrl: env.VITE_GITHUB_URL || "https://github.com/obuluslayer?tab=repositories",
 } as const;
 
 // A production bundle must never silently point at localhost: for an unknown chain id with no
