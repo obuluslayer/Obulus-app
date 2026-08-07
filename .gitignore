@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.vite/
+
+# env — every committed value is PUBLIC (browser bundle). Local overrides never are.
+.env
+.env.*
+!.env.example
+!.env.development
+
+*.log
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+.DS_Store
