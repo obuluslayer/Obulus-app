@@ -33,7 +33,7 @@ export interface CreateOfferInput {
   title: string;
   description: string;
   conditions: string;
-  /** Human USDC amounts, e.g. "300" or "12.50". */
+  /** Human settlement-token amounts, e.g. "300" or "12.50". */
   price: string;
   sellerBond: string;
   buyerBond: string;
@@ -65,7 +65,7 @@ export function useEscrowActions() {
 
   return useMemo(() => {
     const escrow = appConfig.escrowAddress;
-    const usdc = appConfig.usdcAddress;
+    const settlementToken = appConfig.usdgAddress;
 
     function invalidate(...keys: string[]) {
       for (const key of keys) void queryClient.invalidateQueries({ queryKey: [key] });
@@ -82,19 +82,19 @@ export function useEscrowActions() {
         toast.info(`Switch your wallet to ${activeChain.name} first.`);
         return null;
       }
-      if (!escrow || !usdc) {
+      if (!escrow || !settlementToken) {
         toast.error("Contract addresses are not configured for this deployment yet.");
         return null;
       }
       return (getAccount(wagmiConfig).address as Address | undefined) ?? null;
     }
 
-    /** Ensure `spender` may pull `amount` of USDC; runs an exact-scope approve when short. */
+    /** Ensure `spender` may pull `amount` of the settlement token; runs an exact-scope approve when short. */
     async function ensureAllowance(owner: Address, amount: bigint, stepLabel: string) {
       if (amount === 0n) return;
       const current = await readContract(wagmiConfig, {
         abi: erc20Abi,
-        address: usdc!,
+        address: settlementToken!,
         functionName: "allowance",
         args: [owner, escrow!],
       });
@@ -102,7 +102,7 @@ export function useEscrowActions() {
       txController.step(1, stepLabel);
       const sim = await simulateContract(wagmiConfig, {
         abi: erc20Abi,
-        address: usdc!,
+        address: settlementToken!,
         functionName: "approve",
         args: [escrow!, amount],
         account: owner,
@@ -168,7 +168,7 @@ export function useEscrowActions() {
             seller: account,
             buyer: ZERO_ADDRESS,
             arbiter: input.arbiter as Address,
-            token: appConfig.usdcAddress!,
+            token: appConfig.usdgAddress!,
             price: price.toString(),
             buyerBond: buyerBond.toString(),
             sellerBond: sellerBond.toString(),
@@ -218,7 +218,7 @@ export function useEscrowActions() {
           }
           const balance = await readContract(wagmiConfig, {
             abi: erc20Abi,
-            address: usdc!,
+            address: settlementToken!,
             functionName: "balanceOf",
             args: [account],
           });

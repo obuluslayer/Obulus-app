@@ -116,11 +116,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const { data: rawBalance } = useReadContract({
     abi: erc20Abi,
-    address: appConfig.usdcAddress ?? undefined,
+    address: appConfig.usdgAddress ?? undefined,
     functionName: "balanceOf",
     args: account ? [account] : undefined,
     query: {
-      enabled: Boolean(account && appConfig.usdcAddress && !wrongNetwork),
+      enabled: Boolean(account && appConfig.usdgAddress && !wrongNetwork),
       refetchInterval: 8_000,
     },
   });

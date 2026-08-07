@@ -2,7 +2,7 @@ import { formatUnits, parseUnits } from "viem";
 import { appConfig } from "./config";
 
 /** The settlement asset has 6 decimals; amounts stay BigInt/string end to end — never float math. */
-export const USDC_DECIMALS = 6;
+export const TOKEN_DECIMALS = 6;
 
 /**
  * Ticker of the settlement asset, for DISPLAY only — never for identity (the address in appConfig is).
@@ -18,7 +18,7 @@ export const ASSET_SYMBOL: string =
 
 export function formatUsdc(baseSix: string | bigint): string {
   const value = typeof baseSix === "bigint" ? baseSix : BigInt(baseSix);
-  const asText = formatUnits(value, USDC_DECIMALS);
+  const asText = formatUnits(value, TOKEN_DECIMALS);
   const [whole, frac] = asText.split(".");
   const withThousands = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return frac ? `${withThousands}.${frac.slice(0, 2)}` : withThousands;
@@ -34,7 +34,7 @@ export function parseUsdc(input: string): bigint {
   if (!/^\d+(\.\d{1,6})?$/.test(trimmed)) {
     throw new Error(`Enter a positive ${ASSET_SYMBOL} amount (max 6 decimals)`);
   }
-  return parseUnits(trimmed, USDC_DECIMALS);
+  return parseUnits(trimmed, TOKEN_DECIMALS);
 }
 
 export function truncHash(hex: string): string {

@@ -44,10 +44,11 @@ function readApiUrl(): string {
 /// Baked TESTNET fallbacks (chainId → deployed addresses) so a Cloudflare build needs no env for
 /// them. Fill from contracts/deployments/46630.json after `forge script DeployRobinhoodTestnet`.
 /// TESTNET ONLY — never bake mainnet addresses without a boot guard (audit finding HIGH-2).
-const BAKED_ADDRESSES: Record<number, { escrow: `0x${string}`; usdc: `0x${string}` }> = {
+/// `token` is the settlement token: MockUSDC on testnet, USDG on Robinhood Chain mainnet.
+const BAKED_ADDRESSES: Record<number, { escrow: `0x${string}`; token: `0x${string}` }> = {
   46630: {
     escrow: "0xb48F2906A63af20CEf186071593C629112A45649",
-    usdc: "0x64d19B5603C8435892494a1aD61Aa9e9F8FBef38",
+    token: "0x64d19B5603C8435892494a1aD61Aa9e9F8FBef38",
   },
 };
 
@@ -58,7 +59,13 @@ export const appConfig = {
   apiUrl: readApiUrl(),
   chainId,
   escrowAddress: readAddress("VITE_ESCROW_ADDRESS") ?? BAKED_ADDRESSES[chainId]?.escrow ?? null,
-  usdcAddress: readAddress("VITE_USDC_ADDRESS") ?? BAKED_ADDRESSES[chainId]?.usdc ?? null,
+  /// Settlement token. VITE_USDG_ADDRESS is the current name; VITE_USDC_ADDRESS stays accepted so an
+  /// existing Cloudflare/testnet configuration keeps working through the rename.
+  usdgAddress:
+    readAddress("VITE_USDG_ADDRESS") ??
+    readAddress("VITE_USDC_ADDRESS") ??
+    BAKED_ADDRESSES[chainId]?.token ??
+    null,
   rpcUrl: env.VITE_RPC_URL || undefined,
   walletConnectProjectId: env.VITE_WALLETCONNECT_PROJECT_ID || undefined,
   defaultArbiter: readAddress("VITE_DEFAULT_ARBITER"),
@@ -79,4 +86,4 @@ if (import.meta.env.PROD && !KNOWN_CHAIN_IDS.includes(appConfig.chainId) && !app
 }
 
 /** True once the contract addresses are wired in — on-chain actions stay disabled until then. */
-export const onchainConfigured = appConfig.escrowAddress !== null && appConfig.usdcAddress !== null;
+export const onchainConfigured = appConfig.escrowAddress !== null && appConfig.usdgAddress !== null;

@@ -91,7 +91,10 @@ export interface OfferView {
 export interface ChainStatus {
   chainId: number;
   escrow: Address;
-  usdc: Address;
+  /** Settlement token: USDG on Robinhood Chain mainnet, MockUSDC on testnet. */
+  usdg: Address;
+  /** @deprecated Alias of `usdg`, still emitted by the Hub during the rename. */
+  usdc?: Address;
   head: number;
   lastIndexedBlock: number;
   lagBlocks: number;
