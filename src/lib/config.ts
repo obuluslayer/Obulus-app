@@ -64,6 +64,12 @@ export const appConfig = {
   defaultArbiter: readAddress("VITE_DEFAULT_ARBITER"),
   /** Public source: the Obulus repositories (contracts, SDK, cockpit, docs). */
   githubUrl: env.VITE_GITHUB_URL || "https://github.com/obuluslayer?tab=repositories",
+  /** Marketing site. */
+  landingUrl: env.VITE_LANDING_URL || "https://obuluslayer.xyz",
+  /** Documentation site (VitePress). */
+  docsUrl: env.VITE_DOCS_URL || "https://gitbook.obuluslayer.xyz",
+  /** Project account on X. */
+  xUrl: env.VITE_X_URL || "https://x.com/obuluslayer",
 } as const;
 
 // A production bundle must never silently point at localhost: for an unknown chain id with no

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { Providers } from "./providers";
 import { WalletProvider } from "./components/obulus/wallet";
 import { TopNav } from "./components/obulus/top-nav";
+import { SiteFooter } from "./components/obulus/footer";
 import { Board } from "./components/obulus/board";
 import { DealDetail } from "./components/obulus/deal-detail";
 import { OffersPage, DealsPage, DisputesPage, DocsPage, NotFoundPage } from "./components/obulus/pages";
@@ -13,9 +14,10 @@ export default function App() {
     <Providers>
     <WalletProvider>
       <BrowserRouter>
-        <div className="min-h-screen bg-obulus-bg text-obulus-ink">
+        {/* Column layout so the footer sits at the bottom of short pages instead of mid-screen. */}
+        <div className="flex min-h-screen flex-col bg-obulus-bg text-obulus-ink">
           <TopNav />
-          <main>
+          <main className="flex-1">
             {/* Route map for the current single-page DApp. Add future screens here rather than branching in page components. */}
             <Routes>
               <Route path="/" element={<Board />} />
@@ -27,6 +29,7 @@ export default function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
+          <SiteFooter />
         </div>
       </BrowserRouter>
       <Toaster position="bottom-right" />
