@@ -77,6 +77,8 @@ export const appConfig = {
   docsUrl: env.VITE_DOCS_URL || "https://gitbook.obuluslayer.xyz",
   /** Project account on X. */
   xUrl: env.VITE_X_URL || "https://x.com/obuluslayer",
+  /** Community channel on Telegram. */
+  telegramUrl: env.VITE_TELEGRAM_URL || "https://t.me/obuluslayer",
 } as const;
 
 // A production bundle must never silently point at localhost: for an unknown chain id with no

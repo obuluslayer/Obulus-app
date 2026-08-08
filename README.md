@@ -48,6 +48,17 @@ and never reaches the browser.
 Design direction and component conventions live in [`guidelines/Guidelines.md`](guidelines/Guidelines.md).
 Third-party asset licences are listed in [`ATTRIBUTIONS.md`](ATTRIBUTIONS.md).
 
+## Links
+
+```
+Landing        : https://obuluslayer.xyz/
+DApp           : https://app.obuluslayer.xyz/
+Documentation  : https://gitbook.obuluslayer.xyz/
+GitHub         : https://github.com/obuluslayer
+X              : https://x.com/obuluslayer
+Telegram       : https://t.me/obuluslayer
+```
+
 ## Licence
 
 MIT
