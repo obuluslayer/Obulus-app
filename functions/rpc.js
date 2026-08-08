@@ -40,11 +40,32 @@ export async function onRequestPost({ request, env }) {
 
   if (!env.RPC_UPSTREAM) return json({ error: "RPC_UPSTREAM not configured" }, 503);
 
-  const upstream = await fetch(env.RPC_UPSTREAM, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: request.body,
-  });
+  // Validate before fetching. An unusable value (a wss:// endpoint, a stray newline or quotes from a
+  // copy-paste) would otherwise make fetch() throw, and Cloudflare turns that into an opaque 1101 —
+  // a 500 with no hint of which variable is at fault. Fail with the reason instead.
+  let target;
+  try {
+    target = new URL(String(env.RPC_UPSTREAM).trim());
+  } catch {
+    return json({ error: "RPC_UPSTREAM is not a valid URL — check for stray whitespace or quotes" }, 503);
+  }
+  if (target.protocol !== "https:" && target.protocol !== "http:") {
+    return json(
+      { error: `RPC_UPSTREAM must be an http(s) endpoint, got "${target.protocol}" — this proxy speaks JSON-RPC over POST, not WebSocket` },
+      503,
+    );
+  }
+
+  let upstream;
+  try {
+    upstream = await fetch(target, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: request.body,
+    });
+  } catch (err) {
+    return json({ error: `upstream RPC unreachable: ${err?.message ?? err}` }, 502);
+  }
   return new Response(upstream.body, {
     status: upstream.status,
     headers: { "content-type": "application/json" },
