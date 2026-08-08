@@ -22,11 +22,13 @@ function readAddress(name: string): `0x${string}` | null {
 
 function readChainId(): number {
   const raw = env.VITE_CHAIN_ID;
-  if (!raw) return 46630;
+  // Default to PRODUCTION (Robinhood Chain mainnet). Point a preview build at testnet with
+  // VITE_CHAIN_ID=46630, or at a local anvil with 31337.
+  if (!raw) return 4663;
   const id = Number(raw);
   if (!Number.isInteger(id) || id <= 0) {
     configErrors.push(`VITE_CHAIN_ID must be a positive integer, got "${raw}"`);
-    return 46630; // inert — the config screen renders instead of the app
+    return 4663; // inert — the config screen renders instead of the app
   }
   return id;
 }
@@ -41,11 +43,15 @@ function readApiUrl(): string {
   return raw.replace(/\/+$/, "");
 }
 
-/// Baked TESTNET fallbacks (chainId → deployed addresses) so a Cloudflare build needs no env for
-/// them. Fill from contracts/deployments/46630.json after `forge script DeployRobinhoodTestnet`.
-/// TESTNET ONLY — never bake mainnet addresses without a boot guard (audit finding HIGH-2).
-/// `token` is the settlement token: MockUSDC on testnet, USDG on Robinhood Chain mainnet.
+/// Baked deployed addresses (chainId → contracts) so a Cloudflare build needs no env for them.
+/// Filled from contracts/deployments/<chainId>.json after the matching forge script.
+/// `token` is the settlement token: USDG on mainnet, MockUSDC on testnet.
 const BAKED_ADDRESSES: Record<number, { escrow: `0x${string}`; token: `0x${string}` }> = {
+  // PRODUCTION — Robinhood Chain mainnet. Settles in USDG; the escrow exposes it as usdg().
+  4663: {
+    escrow: "0x4B488fFbCAafC1aA6BdC389f8f6f36179619E6E1",
+    token: "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+  },
   46630: {
     escrow: "0xb48F2906A63af20CEf186071593C629112A45649",
     token: "0x64d19B5603C8435892494a1aD61Aa9e9F8FBef38",
